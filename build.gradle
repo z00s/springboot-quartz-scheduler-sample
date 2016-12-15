@@ -18,7 +18,7 @@ repositories {
 
 apply plugin: 'java'
 apply plugin: 'war'
-apply plugin: 'idea'
+//apply plugin: 'idea'
 apply plugin: 'spring-boot'
 
 sourceCompatibility = 1.8
@@ -30,7 +30,12 @@ repositories {
 
 dependencies {
 
+    // spring
     compile("org.springframework.boot:spring-boot-starter-web")
+    compile("org.springframework:spring-context-support")
+    compile("org.springframework:spring-tx")
+
+    // quartz
     compile("org.quartz-scheduler:quartz:2.2.1")
     compile("org.quartz-scheduler:quartz-jobs:2.2.1")
 

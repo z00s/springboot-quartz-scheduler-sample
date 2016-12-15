@@ -9,7 +9,7 @@ import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
-import team.pi.sample.scheduler.controller.MyJob;
+import team.pi.sample.scheduler.job.SampleJob;
 
 /**
  * Created on 2016/12/8
@@ -28,11 +28,16 @@ public class QuartzTest {
 
     @Test
     public void quartzWithJob() throws SchedulerException {
+        // scheduler
         Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
+
+        // job
         JobDetail job = JobBuilder
-            .newJob(MyJob.class)
+            .newJob(SampleJob.class)
             .withIdentity("trigger1", "group1")
             .build();
+
+        // trigger
         Trigger trigger = TriggerBuilder
             .newTrigger()
             .withIdentity("trigger1", "group1")
@@ -42,7 +47,10 @@ public class QuartzTest {
                 .withRepeatCount(10))
             .build();
 
+        // binding
         scheduler.scheduleJob(job, trigger);
+
+        //start
         scheduler.start();
 
         try {

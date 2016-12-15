@@ -5,9 +5,7 @@ import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.SchedulerFactory;
 import org.quartz.Trigger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import team.pi.sample.scheduler.controller.MyJob;
+import team.pi.sample.scheduler.job.SampleJob;
 
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
@@ -18,16 +16,16 @@ import static org.quartz.TriggerBuilder.newTrigger;
  *
  * @author zhangshuai
  */
-@Service
+//@Service
 public class QuartzLauncher {
 
-    @Autowired
+//    @Autowired
     SchedulerFactory schedulerFactory;
 
     public void run() throws SchedulerException {
         Scheduler scheduler = schedulerFactory.getScheduler();
 
-        JobDetail job = newJob(MyJob.class).withIdentity("job1", "group1").build();
+        JobDetail job = newJob(SampleJob.class).withIdentity("job1", "group1").build();
 
 
         Trigger trigger = newTrigger().withIdentity("job1", "group1").build();
