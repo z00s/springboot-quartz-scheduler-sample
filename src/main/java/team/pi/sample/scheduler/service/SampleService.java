@@ -1,5 +1,6 @@
 package team.pi.sample.scheduler.service;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -21,4 +22,9 @@ public class SampleService {
     public void doSomething() {
         log.info("Hello World! SampleJob is executing {}", ++counter);
     }
+
+    public void reset() {
+        counter = 0;
+    }
+
 }

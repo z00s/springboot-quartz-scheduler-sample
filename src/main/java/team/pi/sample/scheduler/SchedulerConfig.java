@@ -4,10 +4,10 @@ import org.quartz.JobDetail;
 import org.quartz.Trigger;
 import org.quartz.spi.JobFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.quartz.CronTriggerFactoryBean;
 import org.springframework.scheduling.quartz.JobDetailFactoryBean;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.scheduling.quartz.SimpleTriggerFactoryBean;
@@ -45,6 +45,19 @@ public class SchedulerConfig {
         return createTrigger(jobDetail);
     }
 
+    @Bean(name = "sampleCronTrigger")
+    public CronTriggerFactoryBean cronTriggerFactoryBean (
+        @Qualifier("sampleJobDetail") JobDetail jobDetail
+    ) {
+        CronTriggerFactoryBean factoryBean = new CronTriggerFactoryBean();
+        factoryBean.setJobDetail(jobDetail);
+        factoryBean.setStartDelay(3000);
+        factoryBean.setName("cronTrigger");
+        factoryBean.setGroup("testGroup");
+        factoryBean.setCronExpression("0 0/1 * 1/1 * ? *");
+        return factoryBean;
+    }
+
     /**
      * create scheduler bean
      *
@@ -53,11 +66,12 @@ public class SchedulerConfig {
     @Bean
     public SchedulerFactoryBean schedulerFactoryBean(
         JobFactory jobFactory,
-        @Qualifier(value = "sampleJobTrigger") Trigger sampleJobTrigger
+        @Qualifier(value = "sampleJobTrigger") Trigger sampleJobTrigger,
+        @Qualifier(value = "sampleCronTrigger") Trigger sampleCronTrigger
     ) {
         SchedulerFactoryBean schedulerFactoryBean = new SchedulerFactoryBean();
         // You can set a series of triggers here
-        schedulerFactoryBean.setTriggers(sampleJobTrigger);
+        schedulerFactoryBean.setTriggers(sampleJobTrigger, sampleCronTrigger);
         schedulerFactoryBean.setJobFactory(jobFactory);
 
         return schedulerFactoryBean;

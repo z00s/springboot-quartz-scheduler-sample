@@ -1,5 +1,6 @@
 package team.pi.sample.scheduler.job;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -15,6 +16,7 @@ import team.pi.sample.scheduler.service.SampleService;
  */
 
 @Slf4j
+@Getter
 public class SampleJob implements Job {
 
     @Autowired
