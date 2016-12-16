@@ -9,7 +9,7 @@ import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
-import team.pi.sample.scheduler.job.SampleJob;
+import team.pi.sample.scheduler.quartz.SampleLauncher;
 
 /**
  * Created on 2016/12/8
@@ -33,7 +33,7 @@ public class QuartzTest {
 
         // job
         JobDetail job = JobBuilder
-            .newJob(SampleJob.class)
+            .newJob(SampleLauncher.class)
             .withIdentity("trigger1", "group1")
             .build();
 

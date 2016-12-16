@@ -13,8 +13,8 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.scheduling.quartz.CronTriggerFactoryBean;
 import org.springframework.scheduling.quartz.JobDetailFactoryBean;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
-import org.springframework.scheduling.quartz.SimpleTriggerFactoryBean;
 import team.pi.sample.scheduler.job.SampleJob;
+import team.pi.sample.scheduler.quartz.SampleLauncher;
 import team.pi.sample.scheduler.spring.AutowiringSpringBeanJobFactory;
 
 import java.io.IOException;
@@ -39,14 +39,13 @@ public class SchedulerConfig {
     @Bean
     public SchedulerFactoryBean schedulerFactoryBean(
         JobFactory jobFactory,
-        @Qualifier(value = "sampleJobTrigger") Trigger sampleJobTrigger,
         @Qualifier(value = "job1Trigger") Trigger sampleCronTrigger
     ) throws IOException {
         SchedulerFactoryBean schedulerFactoryBean = new SchedulerFactoryBean();
         // You can set a series of triggers here
         schedulerFactoryBean.setJobFactory(jobFactory);
         schedulerFactoryBean.setQuartzProperties(quartzProperties());
-        schedulerFactoryBean.setTriggers(sampleJobTrigger, sampleCronTrigger);
+        schedulerFactoryBean.setTriggers(sampleCronTrigger);
 
         return schedulerFactoryBean;
     }
@@ -68,14 +67,7 @@ public class SchedulerConfig {
 
     @Bean(name = "job1")
     public JobDetailFactoryBean jobDetailFactoryBean() {
-        return createJobDetail(SampleJob.class);
-    }
-
-    @Bean(name = "sampleJobTrigger")
-    public SimpleTriggerFactoryBean simpleTriggerFactoryBean (
-        @Qualifier("job1") JobDetail jobDetail
-    ) {
-        return createTrigger(jobDetail);
+        return createJobDetail(SampleLauncher.class);
     }
 
     @Bean(name = "job1Trigger")
@@ -111,16 +103,16 @@ public class SchedulerConfig {
      * @param jobDetail
      * @return
      */
-    private SimpleTriggerFactoryBean createTrigger(JobDetail jobDetail) {
-        SimpleTriggerFactoryBean factoryBean = new SimpleTriggerFactoryBean();
-
-        factoryBean.setJobDetail(jobDetail);
-
-        factoryBean.setStartDelay(3000);        // 3s
-        factoryBean.setRepeatInterval(3000);    // 3s
-        factoryBean.setRepeatCount(5);          // 5 + 1 times
-
-        return factoryBean;
-    }
+//    private SimpleTriggerFactoryBean createTrigger(JobDetail jobDetail) {
+//        SimpleTriggerFactoryBean factoryBean = new SimpleTriggerFactoryBean();
+//
+//        factoryBean.setJobDetail(jobDetail);
+//
+//        factoryBean.setStartDelay(3000);        // 3s
+//        factoryBean.setRepeatInterval(3000);    // 3s
+//        factoryBean.setRepeatCount(5);          // 5 + 1 times
+//
+//        return factoryBean;
+//    }
 
 }

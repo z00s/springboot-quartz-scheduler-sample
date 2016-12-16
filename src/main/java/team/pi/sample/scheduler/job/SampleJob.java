@@ -6,6 +6,7 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import team.pi.sample.scheduler.service.SampleService;
 
 /**
@@ -17,12 +18,12 @@ import team.pi.sample.scheduler.service.SampleService;
 
 @Slf4j
 @Getter
-public class SampleJob implements Job {
+@Component
+public class SampleJob{
 
     @Autowired
     private SampleService service;
 
-    @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
 
         service.doSomething();
