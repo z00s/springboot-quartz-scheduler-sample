@@ -1,13 +1,13 @@
 package team.pi.sample.scheduler.controller;
 
-import org.quartz.JobKey;
+import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import team.pi.sample.scheduler.job.SampleJob;
 
 /**
  * Created on 2016/12/15
@@ -21,15 +21,16 @@ import team.pi.sample.scheduler.job.SampleJob;
 public class SchedulerResource extends BaseResource{
 
 
-    @GetMapping("/trigger")
+    @GetMapping("/trigger/{jobId}")
     @ResponseBody
-    public String trigger() throws SchedulerException {
+    public String trigger(
+        @PathVariable(value="jobId") String jobId
+    ) throws SchedulerException {
 
         Scheduler scheduler = schedulerFactoryBean.getScheduler();
-        JobKey key = new JobKey("cronTrigger", "testGroup");
-        SampleJob job = (SampleJob) scheduler.getJobDetail(key);
-        job.getService().reset();
-        scheduler.triggerJob(key);
+
+        JobDetail jobDetail = getJobDetail(jobId);
+        scheduler.triggerJob(jobDetail.getKey());
         return "Successfully triggered job...";
     }
 }

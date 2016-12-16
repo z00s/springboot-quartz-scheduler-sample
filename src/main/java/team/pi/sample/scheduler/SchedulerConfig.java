@@ -15,7 +15,6 @@ import team.pi.sample.scheduler.job.SampleJob;
 import team.pi.sample.scheduler.spring.AutowiringSpringBeanJobFactory;
 
 
-
 /**
  * Created on 2016/12/8
  * [Function]
@@ -33,28 +32,28 @@ public class SchedulerConfig {
         return jobFactory;
     }
 
-    @Bean(name = "sampleJobDetail")
+    @Bean(name = "job1")
     public JobDetailFactoryBean jobDetailFactoryBean() {
         return createJobDetail(SampleJob.class);
     }
 
     @Bean(name = "sampleJobTrigger")
     public SimpleTriggerFactoryBean simpleTriggerFactoryBean(
-        @Qualifier("sampleJobDetail") JobDetail jobDetail
+        @Qualifier("job1") JobDetail jobDetail
     ) {
         return createTrigger(jobDetail);
     }
 
     @Bean(name = "sampleCronTrigger")
     public CronTriggerFactoryBean cronTriggerFactoryBean (
-        @Qualifier("sampleJobDetail") JobDetail jobDetail
+        @Qualifier("job1") JobDetail jobDetail
     ) {
         CronTriggerFactoryBean factoryBean = new CronTriggerFactoryBean();
         factoryBean.setJobDetail(jobDetail);
         factoryBean.setStartDelay(3000);
         factoryBean.setName("cronTrigger");
         factoryBean.setGroup("testGroup");
-        factoryBean.setCronExpression("0 0/1 * 1/1 * ? *");
+        factoryBean.setCronExpression("0/10 * * * * ?");
         return factoryBean;
     }
 
