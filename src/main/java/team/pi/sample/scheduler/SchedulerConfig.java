@@ -4,15 +4,21 @@ import org.quartz.JobDetail;
 import org.quartz.Trigger;
 import org.quartz.spi.JobFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.config.PropertiesFactoryBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.scheduling.quartz.CronTriggerFactoryBean;
 import org.springframework.scheduling.quartz.JobDetailFactoryBean;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.scheduling.quartz.SimpleTriggerFactoryBean;
 import team.pi.sample.scheduler.job.SampleJob;
 import team.pi.sample.scheduler.spring.AutowiringSpringBeanJobFactory;
+
+import java.io.IOException;
+import java.util.Properties;
 
 
 /**
@@ -22,8 +28,28 @@ import team.pi.sample.scheduler.spring.AutowiringSpringBeanJobFactory;
  * @author zhangshuai
  */
 @Configuration
-//@ConditionalOnProperty(name = "quartz.enabled")
+@ConditionalOnProperty(name = "quartz.enabled")
 public class SchedulerConfig {
+
+    /**
+     * create scheduler bean
+     *
+     * @return schedulerFactoryBean
+     */
+    @Bean
+    public SchedulerFactoryBean schedulerFactoryBean(
+        JobFactory jobFactory,
+        @Qualifier(value = "sampleJobTrigger") Trigger sampleJobTrigger,
+        @Qualifier(value = "job1Trigger") Trigger sampleCronTrigger
+    ) throws IOException {
+        SchedulerFactoryBean schedulerFactoryBean = new SchedulerFactoryBean();
+        // You can set a series of triggers here
+        schedulerFactoryBean.setJobFactory(jobFactory);
+        schedulerFactoryBean.setQuartzProperties(quartzProperties());
+        schedulerFactoryBean.setTriggers(sampleJobTrigger, sampleCronTrigger);
+
+        return schedulerFactoryBean;
+    }
 
     @Bean
     public JobFactory jobFactory(ApplicationContext applicationContext) {
@@ -32,19 +58,27 @@ public class SchedulerConfig {
         return jobFactory;
     }
 
+    @Bean
+    public Properties quartzProperties() throws IOException {
+        PropertiesFactoryBean propertiesFactoryBean = new PropertiesFactoryBean();
+        propertiesFactoryBean.setLocation(new ClassPathResource("/quartz.properties"));
+        propertiesFactoryBean.afterPropertiesSet();
+        return propertiesFactoryBean.getObject();
+    }
+
     @Bean(name = "job1")
     public JobDetailFactoryBean jobDetailFactoryBean() {
         return createJobDetail(SampleJob.class);
     }
 
     @Bean(name = "sampleJobTrigger")
-    public SimpleTriggerFactoryBean simpleTriggerFactoryBean(
+    public SimpleTriggerFactoryBean simpleTriggerFactoryBean (
         @Qualifier("job1") JobDetail jobDetail
     ) {
         return createTrigger(jobDetail);
     }
 
-    @Bean(name = "sampleCronTrigger")
+    @Bean(name = "job1Trigger")
     public CronTriggerFactoryBean cronTriggerFactoryBean (
         @Qualifier("job1") JobDetail jobDetail
     ) {
@@ -56,26 +90,6 @@ public class SchedulerConfig {
         factoryBean.setCronExpression("0/10 * * * * ?");
         return factoryBean;
     }
-
-    /**
-     * create scheduler bean
-     *
-     * @return schedulerFactoryBean
-     */
-    @Bean
-    public SchedulerFactoryBean schedulerFactoryBean(
-        JobFactory jobFactory,
-        @Qualifier(value = "sampleJobTrigger") Trigger sampleJobTrigger,
-        @Qualifier(value = "sampleCronTrigger") Trigger sampleCronTrigger
-    ) {
-        SchedulerFactoryBean schedulerFactoryBean = new SchedulerFactoryBean();
-        // You can set a series of triggers here
-        schedulerFactoryBean.setTriggers(sampleJobTrigger, sampleCronTrigger);
-        schedulerFactoryBean.setJobFactory(jobFactory);
-
-        return schedulerFactoryBean;
-    }
-
 
     /**
      * helper to create JobDetails

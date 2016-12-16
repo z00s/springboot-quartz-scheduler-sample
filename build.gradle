@@ -6,7 +6,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.4.0.RELEASE")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.4.2.RELEASE")
     }
 }
 
@@ -17,7 +17,7 @@ repositories {
 }
 
 apply plugin: 'java'
-apply plugin: 'war'
+//apply plugin: 'war'
 //apply plugin: 'idea'
 apply plugin: 'spring-boot'
 

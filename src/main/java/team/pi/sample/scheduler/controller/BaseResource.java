@@ -17,17 +17,20 @@ public abstract class BaseResource {
     /**
      * job detail map
      */
-    @Autowired
+    @Autowired(required = false)
     protected Map<String, JobDetail> jobDetailMap;
 
     /**
      * scheduler
      */
-    @Autowired
+    @Autowired(required = false)
     protected SchedulerFactoryBean schedulerFactoryBean;
 
     protected JobDetail getJobDetail(String jobId) {
 
+        if (jobDetailMap == null) {
+            return null;
+        }
         JobDetail jobDetail = null;
 
         for (Map.Entry<String , JobDetail> entry : jobDetailMap.entrySet()) {

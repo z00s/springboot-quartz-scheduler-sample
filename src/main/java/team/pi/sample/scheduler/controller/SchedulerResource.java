@@ -27,6 +27,9 @@ public class SchedulerResource extends BaseResource{
         @PathVariable(value="jobId") String jobId
     ) throws SchedulerException {
 
+        if (schedulerFactoryBean == null) {
+            return "Sorry. Scheduler system is down...";
+        }
         Scheduler scheduler = schedulerFactoryBean.getScheduler();
 
         JobDetail jobDetail = getJobDetail(jobId);
