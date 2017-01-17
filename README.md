@@ -1,6 +1,6 @@
 # springboot-quartz-scheduler-sample
 
-Simple sample shows how to integrate spring-boot and quartz together.
+Simple sample shows how to integrate quartz with spring-boot.
 
 - spring-boot
 - quartz
